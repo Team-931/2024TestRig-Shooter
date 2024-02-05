@@ -5,7 +5,6 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -22,8 +21,8 @@ public class RobotContainer {
   private final Shooter shooter = new Shooter();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController opStick =
+      new CommandXboxController(OperatorConstants.opStickPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -48,12 +47,16 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(shooter.exampleMethodCommand());
-    m_driverController.b().onTrue(shooter.holdCommand(1));
-    m_driverController.b().onFalse(shooter.holdCommand(0));
-    m_driverController.x().onTrue(shooter.holdCommand(-1));
-    m_driverController.x().onFalse(shooter.holdCommand(0));
-    m_driverController.y().onTrue(shooter.shootCommand(1));
-    m_driverController.y().onFalse(shooter.shootCommand(0));
+    {/* b and x buttons: forward and reverse shooter hold */
+      final var left = opStick.b().and(opStick.x().negate());
+      final var right = opStick.x().and(opStick.b().negate());
+    left.onTrue(shooter.holdCommand(1));
+    right.onTrue(shooter.holdCommand(-1));
+    left.or(right).onFalse(shooter.holdCommand(0));
+    }
+    /* y button: shooter shoot */
+    opStick.y().onTrue(shooter.shootCommand(1));
+    opStick.y().onFalse(shooter.shootCommand(0));
   }
 
   /**
