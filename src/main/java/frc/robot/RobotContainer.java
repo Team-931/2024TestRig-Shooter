@@ -47,16 +47,16 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(shooter.exampleMethodCommand());
-    {/* b and x buttons: forward and reverse shooter hold */
-      final var left = opStick.b().and(opStick.x().negate());
-      final var right = opStick.x().and(opStick.b().negate());
-    left.onTrue(shooter.holdCommand(1));
-    right.onTrue(shooter.holdCommand(-1));
-    left.or(right).onFalse(shooter.holdCommand(0));
-    }
+    /* b and x buttons: forward and reverse shooter hold */
+      opStick.b().and(opStick.x().negate()) .onTrue(shooter.holdCommand(1))
+        .or(
+      opStick.x().and(opStick.b().negate()) .onTrue(shooter.holdCommand(-1))
+        )
+                                            .onFalse(shooter.holdCommand(0));
+    
     /* y button: shooter shoot */
-    opStick.y().onTrue(shooter.shootCommand(1));
-    opStick.y().onFalse(shooter.shootCommand(0));
+      opStick.y() .onTrue(shooter.shootCommand(1))
+                  .onFalse(shooter.shootCommand(0));
   }
 
   /**
