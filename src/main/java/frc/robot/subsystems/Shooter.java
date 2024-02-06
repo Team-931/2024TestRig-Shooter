@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
+  /** Creates a new Shooter object. */
   public Shooter() {
 
   }
@@ -51,11 +51,11 @@ public Command holdCommand(double h) {
    *
    * @return value of some boolean subsystem state, such as a digital sensor.
    */
-  public boolean exampleCondition() {
+/*   public boolean exampleCondition() {
     // Query some boolean state, such as a digital sensor.
     return false;
   }
-
+ */
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -65,11 +65,11 @@ public Command holdCommand(double h) {
     holdFront.set(ShooterConstants.holdFrontSpd * holdIng);
   }
 
-  @Override
+/*   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
-
+ */
   private double holdIng = 0, shootIng = 0;
 
   public void setHold(double h) {
