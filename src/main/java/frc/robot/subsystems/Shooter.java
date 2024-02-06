@@ -6,10 +6,12 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants.ShooterConstants;
@@ -65,9 +67,15 @@ public Command holdCommand(double h) {
     holdFront.set(ShooterConstants.holdFrontSpd * holdIng);
   }
 
+  public void simulationInit() {
+    REVPhysicsSim.getInstance().addSparkMax(holdBack, DCMotor.getNEO(1));
+    REVPhysicsSim.getInstance().addSparkMax(holdFront, DCMotor.getNEO(1));
+  }
+
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+    REVPhysicsSim.getInstance().run();
   }
 
   private double holdIng = 0, shootIng = 0;

@@ -68,4 +68,8 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return null; //Autos.exampleAuto(shooter);
   }
+
+  public void simulationInit() {
+    shooter.simulationInit();
+  }
 }
