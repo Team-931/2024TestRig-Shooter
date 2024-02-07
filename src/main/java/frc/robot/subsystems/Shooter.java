@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVPhysicsSim;
@@ -61,8 +62,8 @@ public Command holdCommand(double h) {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    shootBottom.set(ShooterConstants.shootBottomSpd * shootIng);
-    shootTop.set(ShooterConstants.shootTopSpd * shootIng);
+    //shootBottom.set(ShooterConstants.shootBottomSpd * shootIng);
+    //shootTop.set(ShooterConstants.shootTopSpd * shootIng);
     holdBack.set(ShooterConstants.holdBackSpd * holdIng);
     holdFront.set(ShooterConstants.holdFrontSpd * holdIng);
   }
@@ -78,13 +79,19 @@ public Command holdCommand(double h) {
     REVPhysicsSim.getInstance().run();
   }
 
-  private double holdIng = 0, shootIng = 0;
+  private double holdIng = 0/* , shootIng = 0 */;
 
   public void setHold(double h) {
     holdIng = h;
   }
+  
+  static final VelocityDutyCycle shootVelocityDutyCycle = new VelocityDutyCycle (0);
+
   public void setShoot(double s) {
-    shootIng = s;
+    shootTop.setControl(shootVelocityDutyCycle.withVelocity(s*ShooterConstants.shootTopSpd)
+        .withFeedForward(Math.signum(s)));
+    shootBottom.setControl(shootVelocityDutyCycle.withVelocity(s*ShooterConstants.shootBottomSpd)
+        .withFeedForward(-Math.signum(s)));
   }
 
   private final TalonFX shootTop = new TalonFX(ShooterConstants.shootTopID),

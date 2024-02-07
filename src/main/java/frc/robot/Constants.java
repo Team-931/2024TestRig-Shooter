@@ -17,8 +17,14 @@ public final class Constants {
     public static final int opStickPort = 0;
   }
   public static class ShooterConstants {
-   public static final double shootTopSpd = 1, shootBottomSpd = -1,
-    holdBackSpd = 1, holdFrontSpd = 1;
+    public static final double shootGearing = 2./3;
+    
+    public static final double shootTopSpd = 60*shootGearing,
+      shootBottomSpd = -60*shootGearing,
+      shootTopFFwd = 1,
+      shootBottomFFwd = -1,
+      holdBackSpd = 1, holdFrontSpd = 1;
+
     public static final int shootBottomID = 22, shootTopID = 23,
       holdBackID = 20, holdFrontID = 21;
   }
