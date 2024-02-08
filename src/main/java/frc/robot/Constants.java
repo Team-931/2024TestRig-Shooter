@@ -18,7 +18,7 @@ public final class Constants {
   }
   public static class ShooterConstants {
    public static final double shootTopSpd = 1, shootBottomSpd = -1,
-    holdBackSpd = 1, holdFrontSpd = 1;
+    holdBackSpd = .3, holdFrontSpd = .3;
     public static final int shootBottomID = 22, shootTopID = 23,
       holdBackID = 20, holdFrontID = 21;
   }
