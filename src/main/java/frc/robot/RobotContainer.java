@@ -40,6 +40,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    // for triggering motions
+    //opStick.axisGreaterThan(0, .1).onTrue(/*  opSick.getAxis */)
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     //new Trigger(shooter::exampleCondition)
     //    .onTrue(new HoldCommand(shooter, 1));
