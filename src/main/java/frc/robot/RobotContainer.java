@@ -26,6 +26,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    shooter.setDefaultCommand(shooter.run(()->{shooter.setHold(opStick.getLeftY());}));
     // Configure the trigger bindings
     configureBindings();
   }
