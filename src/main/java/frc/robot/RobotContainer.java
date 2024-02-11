@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -50,8 +51,8 @@ public class RobotContainer {
     {/* left and right buttons: forward and reverse shooter hold */
       final var left = opStick.leftBumper().and(opStick.rightBumper().negate());
       final var right = opStick.rightBumper().and(opStick.leftBumper().negate());
-    left.onTrue(shooter.holdCommand(-1));
-    right.onTrue(shooter.holdCommand(1));
+    left.onTrue(shooter.holdCommand(ShooterConstants.holdFwd));
+    right.onTrue(shooter.holdCommand(ShooterConstants.holdRvs));
     left.or(right).onFalse(shooter.holdCommand(0));
     }
     /* y button: shooter shoot */
