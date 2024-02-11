@@ -71,7 +71,7 @@ public Command holdCommand(double h) {
       else {
         periodicdelay = 10;
         SmartDashboard.putString("shooter velocity", shVel.refresh().toString());
-        SmartDashboard.putNumber("hold velocity (RpM)", holdEnc.getVelocity());
+        SmartDashboard.putNumber("hold velocity (RpS)", holdEnc.getVelocity());
       }
     }
   }
@@ -98,4 +98,7 @@ public Command holdCommand(double h) {
   private int periodicdelay = 0;
   private final StatusSignal<Double> shVel = shootTop.getVelocity();
   private final RelativeEncoder holdEnc = holdBack.getEncoder();
+  {
+    holdEnc.setVelocityConversionFactor(ShooterConstants.RpM2RpS);
+  }
  }
