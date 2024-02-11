@@ -23,8 +23,9 @@ public class Shooter extends SubsystemBase {
   }
 
   /**
-   * Example command factory method.
+   * command factory method controlling the note shooting motors.
    *
+   * @param s - "power" to pass on
    * @return a command
    */
   public Command shootCommand(double s) {
@@ -37,7 +38,13 @@ public class Shooter extends SubsystemBase {
         });
   }
 
-public Command holdCommand(double h) {
+/**
+   * command factory method controlling the note holding motors.
+   *
+   * @param h - "power" to pass on
+   * @return a command
+   */
+  public Command holdCommand(double h) {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
@@ -59,7 +66,9 @@ public Command holdCommand(double h) {
   }
  */
 
-    /** This method will be called once per scheduler run */
+    /** This method will be called once per scheduler run
+     * (every 20 ms).
+     */
     @Override
   public void periodic() {
     shootBottom.set(ShooterConstants.shootBottomSpd * shootIng);
