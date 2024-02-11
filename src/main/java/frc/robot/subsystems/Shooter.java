@@ -4,8 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,13 +58,22 @@ public Command holdCommand(double h) {
     return false;
   }
  */
-  @Override
+
+    /** This method will be called once per scheduler run */
+    @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     shootBottom.set(ShooterConstants.shootBottomSpd * shootIng);
     shootTop.set(ShooterConstants.shootTopSpd * shootIng);
     holdBack.set(ShooterConstants.holdBackSpd * holdIng);
     holdFront.set(ShooterConstants.holdFrontSpd * holdIng);
+    {
+      if (periodicdelay > 0) --periodicdelay;
+      else {
+        periodicdelay = 10;
+        SmartDashboard.putString("shooter velocity", shVel.refresh().toString());
+        SmartDashboard.putNumber("hold velocity (RpM)", holdEnc.getVelocity());
+      }
+    }
   }
 
 /*   @Override
@@ -83,4 +94,8 @@ public Command holdCommand(double h) {
    shootBottom = new TalonFX(ShooterConstants.shootBottomID);
   private final CANSparkMax holdFront = new CANSparkMax(ShooterConstants.holdFrontID, MotorType.kBrushless),
    holdBack = new CANSparkMax(ShooterConstants.holdBackID, MotorType.kBrushless);
-}
+/**  used only in periodic() */
+  private int periodicdelay = 0;
+  private final StatusSignal<Double> shVel = shootTop.getVelocity();
+  private final RelativeEncoder holdEnc = holdBack.getEncoder();
+ }
