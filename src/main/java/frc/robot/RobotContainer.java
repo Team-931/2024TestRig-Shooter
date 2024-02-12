@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -48,9 +49,9 @@ public class RobotContainer {
     // cancelling on release.
     //m_driverController.b().whileTrue(shooter.exampleMethodCommand());
     /* leftBumper and rightBumper buttons: forward and reverse shooter hold */
-      opStick.leftBumper().and(opStick.rightBumper().negate()) .onTrue(shooter.holdCommand(-1))
+      opStick.leftBumper().and(opStick.rightBumper().negate()) .onTrue(shooter.holdCommand(ShooterConstants.holdFwd))
         .or(
-      opStick.rightBumper().and(opStick.leftBumper().negate()) .onTrue(shooter.holdCommand(1))
+      opStick.rightBumper().and(opStick.leftBumper().negate()) .onTrue(shooter.holdCommand(ShooterConstants.holdRvs))
         )
                                             .onFalse(shooter.holdCommand(0));
     

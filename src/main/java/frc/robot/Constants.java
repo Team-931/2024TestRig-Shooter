@@ -23,9 +23,10 @@ public final class Constants {
       shootBottomSpd = -60*shootGearing,
       shootTopFFwd = 1,
       shootBottomFFwd = -1,
-      holdBackSpd = 1, holdFrontSpd = 1;
+      holdBackSpd = .3, holdFrontSpd = .3, holdFwd = -1, holdRvs = 1;
 
     public static final int shootBottomID = 22, shootTopID = 23,
       holdBackID = 20, holdFrontID = 21;
+    public static final double RpM2RpS = 1.0/60;
   }
 }
