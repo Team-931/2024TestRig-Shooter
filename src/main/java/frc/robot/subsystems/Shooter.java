@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
@@ -20,7 +21,13 @@ import frc.robot.Constants.ShooterConstants;
 public class Shooter extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public Shooter() {
-
+    Slot0Configs pid = new Slot0Configs();
+    pid.kP = .11;
+    pid.kI = .5;
+    pid.kD = .0001;
+    pid.kV = .12;
+    shootBottom.getConfigurator().apply(pid);
+    shootTop.getConfigurator().apply(pid);
   }
 
   /**
@@ -89,9 +96,9 @@ public Command holdCommand(double h) {
 
   public void setShoot(double s) {
     shootTop.setControl(shootVelocityDutyCycle.withVelocity(s*ShooterConstants.shootTopSpd)
-        .withFeedForward(Math.signum(s)));
+        /* .withFeedForward(Math.signum(s)) */);
     shootBottom.setControl(shootVelocityDutyCycle.withVelocity(s*ShooterConstants.shootBottomSpd)
-        .withFeedForward(-Math.signum(s)));
+        /* .withFeedForward(-Math.signum(s)) */);
   }
 
   private final TalonFX shootTop = new TalonFX(ShooterConstants.shootTopID),
