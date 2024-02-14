@@ -113,7 +113,8 @@ public class Shooter extends SubsystemBase {
     holdIng = h;
   }
   
-  static final VelocityDutyCycle shootVelocityDutyCycle = new VelocityDutyCycle (0);
+  static final VelocityDutyCycle shootVelocityDutyCycle
+     = new VelocityDutyCycle (0).withOverrideBrakeDurNeutral(true);
 
   public void setShoot(double s) {
     shootTop.setControl(shootVelocityDutyCycle.withVelocity(s*ShooterConstants.shootTopSpd)
