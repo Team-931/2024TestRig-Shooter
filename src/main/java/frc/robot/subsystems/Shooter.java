@@ -6,7 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVPhysicsSim;
@@ -21,7 +21,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
-  /** Creates a new Shooter object. */
+  /** Creates a new Shooter object.
+   * Note that these Slot0Configs are specific to the VelocityVoltage
+   * control method. To use VelocityDutyCycle divide by 12 V.
+   * @see shootVelocityVoltage
+   * @see VelocityVoltage
+   */
   public Shooter() {
     Slot0Configs pid = new Slot0Configs();
     pid.kP = .11;
@@ -113,13 +118,14 @@ public class Shooter extends SubsystemBase {
     holdIng = h;
   }
   
-  static final VelocityDutyCycle shootVelocityDutyCycle
-     = new VelocityDutyCycle (0).withOverrideBrakeDurNeutral(true);
+  /** for control of shootTop and shootBottom */
+  static final VelocityVoltage shootVelocityVoltage
+     = new VelocityVoltage (0).withOverrideBrakeDurNeutral(true);
 
   public void setShoot(double s) {
-    shootTop.setControl(shootVelocityDutyCycle.withVelocity(s*ShooterConstants.shootTopSpd)
+    shootTop.setControl(shootVelocityVoltage.withVelocity(s*ShooterConstants.shootTopSpd)
         /* .withFeedForward(Math.signum(s)) */);
-    shootBottom.setControl(shootVelocityDutyCycle.withVelocity(s*ShooterConstants.shootBottomSpd)
+    shootBottom.setControl(shootVelocityVoltage.withVelocity(s*ShooterConstants.shootBottomSpd)
         /* .withFeedForward(-Math.signum(s)) */);
   }
 
