@@ -16,17 +16,32 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int opStickPort = 0;
   }
+  public static class DriveConstants {
+    public static final int driveIDs[] = {1,3,5,7},
+                            turnIDs[]  = {2,4,6,8};
+    
+  }
+  public static class IntakeConstants {
+  
+    
+   public static final int intakeID = 15;
+  }
+  public static class  ArmConstants {
+    public static final double gearing = 6 /* sprocket */ * 100 /* gearbox */ /1;
+    public static final int ArmID = 10;
+  }
   public static class ShooterConstants {
     public static final double shootGearing = 2./3;
     
-    public static final double shootTopSpd = 60*shootGearing,
+    public static final double shootTopSpd = -60*shootGearing,
       shootBottomSpd = -60*shootGearing,
       shootTopFFwd = 1,
       shootBottomFFwd = -1,
-      holdBackSpd = .3, holdFrontSpd = .3, holdFwd = 1, holdRvs = -1;
+      holdBackSpd = .3, holdFrontSpd = -.3, holdFwd = 1, holdRvs = -1;
 
     public static final int shootBottomID = 22, shootTopID = 23,
-      holdBackID = 20, holdFrontID = 21;
+      holdBackID = 20, holdFrontID = 21,
+      sensorID = 0;
     public static final double RpM2RpS = 1.0/60;
   }
 }

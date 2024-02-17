@@ -16,14 +16,15 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter object.
-   * Note that these Slot0Configs are specific to the VelocityVoltage
-   * control method. To use VelocityDutyCycle divide by 12 V.
+   * Note that these Slot0Configs are specific to the {@link VelocityVoltage}
+   * control method. To use {@link VelocityDutyCycle} divide by 12 V.
    * @see shootVelocityVoltage
    * @see VelocityVoltage
    */
@@ -97,6 +98,7 @@ public class Shooter extends SubsystemBase {
         periodicdelay = 10;
         SmartDashboard.putString("shooter velocity", shVel.refresh().toString());
         SmartDashboard.putNumber("hold velocity (RpS)", holdEnc.getVelocity());
+        SmartDashboard.putBoolean("sensor", sensor.get());
       }
     }
 }
@@ -120,7 +122,7 @@ public class Shooter extends SubsystemBase {
   
   /** for control of shootTop and shootBottom */
   static final VelocityVoltage shootVelocityVoltage
-     = new VelocityVoltage (0).withOverrideBrakeDurNeutral(true);
+     = new VelocityVoltage (0) .withSlot(0) /* .withOverrideBrakeDurNeutral(true) */;
 
   public void setShoot(double s) {
     shootTop.setControl(shootVelocityVoltage.withVelocity(s*ShooterConstants.shootTopSpd)
@@ -128,11 +130,12 @@ public class Shooter extends SubsystemBase {
     shootBottom.setControl(shootVelocityVoltage.withVelocity(s*ShooterConstants.shootBottomSpd)
         /* .withFeedForward(-Math.signum(s)) */);
   }
-
+//motors
   private final TalonFX shootTop = new TalonFX(ShooterConstants.shootTopID),
    shootBottom = new TalonFX(ShooterConstants.shootBottomID);
   private final CANSparkMax holdFront = new CANSparkMax(ShooterConstants.holdFrontID, MotorType.kBrushless),
    holdBack = new CANSparkMax(ShooterConstants.holdBackID, MotorType.kBrushless);
+  private final DigitalInput sensor = new DigitalInput(ShooterConstants.sensorID);
 /**  used only in periodic() */
   private int periodicdelay = 0;
   private final StatusSignal<Double> shVel = shootTop.getVelocity();
