@@ -71,6 +71,23 @@ public class Shooter extends SubsystemBase {
         });
   }
 
+/**
+   * command factory method controlling the back holding motor {@bold only}.
+   *
+   * @param h - "power" to pass on
+   * @return a command
+   */
+  public Command holdbackCommand(double h) {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return runOnce(
+        () -> {
+          /* one-time action goes here */
+          holdIng = h;
+          SmartDashboard.putNumber("holding:", h);
+        });
+  }
+
     /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
    *
@@ -91,7 +108,7 @@ public class Shooter extends SubsystemBase {
     //shootBottom.set(ShooterConstants.shootBottomSpd * shootIng);
     //shootTop.set(ShooterConstants.shootTopSpd * shootIng);
     holdBack.set(ShooterConstants.holdBackSpd * holdIng);
-    holdFront.set(ShooterConstants.holdFrontSpd * holdIng);
+    holdFront.set(ShooterConstants.holdFrontSpd * holdIngFront);
     {
       if (periodicdelay > 0) --periodicdelay;
       else {
@@ -115,10 +132,11 @@ public class Shooter extends SubsystemBase {
     REVPhysicsSim.getInstance().run();
   }
 
-  private double holdIng = 0/* , shootIng = 0 */;
+  private double holdIng = 0, holdIngFront = 0;
 
   public void setHold(double h) {
     holdIng = h;
+    holdIngFront = h;
   }
   
   /** for control of shootTop and shootBottom */
