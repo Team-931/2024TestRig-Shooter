@@ -9,7 +9,7 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -36,7 +36,7 @@ public class RobotContainer {
     configureBindings();
     // testing only . . .
     arm.setDefaultCommand(
-      arm.run(() -> {arm.gotoAngle(-opStick.getLeftY()*5);}));
+      arm.run(() -> {arm.gotoAngle(-opStick.getLeftY());}));
   }
 
   /**
@@ -58,11 +58,19 @@ public class RobotContainer {
     //m_driverController.b().whileTrue(shooter.exampleMethodCommand());
     /* leftBumper and rightBumper buttons: forward and reverse shooter hold */
       opStick.leftBumper().and(opStick.rightBumper().negate()) .onTrue(shooter.holdCommand(ShooterConstants.holdFwd)
-          .andThen(intake.runcommand(.3).onlyIf(() -> {return arm.getAngle() < 5;})))
+          .andThen(intake.runIf(.3, () -> {
+            var a = arm.getAngle() < 1./72;
+            SmartDashboard.putBoolean("Arm test", a);
+            return a;})))
         .or(
-      opStick.rightBumper().and(opStick.leftBumper().negate()) .onTrue(shooter.holdCommand(ShooterConstants.holdRvs))
+      opStick.rightBumper().and(opStick.leftBumper().negate()) .onTrue(shooter.holdCommand(ShooterConstants.holdRvs)
+          .andThen(intake.runIf(-.3, () -> {
+            var a = arm.getAngle() < 1./72;
+            SmartDashboard.putBoolean("Arm test", a);
+            return a;})))
         )
-                                            .onFalse(shooter.holdCommand(0));
+                                            .onFalse(shooter.holdCommand(0)
+                                            .andThen(intake.runcommand(0)));
     
     /* y button: shooter shoot */
       opStick.y() .onTrue(shooter.shootCommand(1))
