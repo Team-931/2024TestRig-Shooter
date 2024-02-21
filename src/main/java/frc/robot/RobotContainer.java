@@ -34,6 +34,9 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    // testing only . . .
+    arm.setDefaultCommand(
+      arm.run(() -> {arm.gotoAngle(opStick.getLeftY());}));
   }
 
   /**
