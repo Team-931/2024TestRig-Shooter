@@ -36,7 +36,7 @@ public class RobotContainer {
     configureBindings();
     // testing only . . .
     arm.setDefaultCommand(
-      arm.run(() -> {arm.gotoAngle(opStick.getLeftY());}));
+      arm.run(() -> {arm.gotoAngle(-opStick.getLeftY()*5);}));
   }
 
   /**
