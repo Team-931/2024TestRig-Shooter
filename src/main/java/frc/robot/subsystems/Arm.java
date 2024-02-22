@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -16,11 +17,15 @@ import frc.robot.Constants.ArmConstants;
 public class Arm  extends SubsystemBase{
     public Arm() {
         var mctrl = motor.getConfigurator();
+        mctrl.setPosition(ArmConstants.lowerLimit);
         var sensConfigs = new FeedbackConfigs();
-        sensConfigs.FeedbackRotorOffset = angle.getValueAsDouble();
+        //sensConfigs.FeedbackRotorOffset = angle.getValueAsDouble();
         sensConfigs.SensorToMechanismRatio = ArmConstants.gearing;
         mctrl.apply(sensConfigs);
-        var pid = new Slot0Configs() .withKP(12.) /* .withKI(12./10) */;
+        var pid = new Slot0Configs()
+             .withKP(ArmConstants.kP) 
+             .withKG(ArmConstants.holdAt0)
+             .withGravityType(GravityTypeValue.Arm_Cosine);
         mctrl.apply(pid);
         var out = new MotorOutputConfigs() .withInverted(InvertedValue.Clockwise_Positive) .withNeutralMode(NeutralModeValue.Brake);
         mctrl.apply(out);
@@ -40,6 +45,8 @@ public class Arm  extends SubsystemBase{
         return angle.refresh().getValueAsDouble();
     }
     public void gotoAngle(double angle) {
+        angle = Math.min(angle, ArmConstants.lowerLimit);
+        angle = Math.max(angle, ArmConstants.upperLimit);
         SmartDashboard.putNumber("desired angle", angle);
         motor.setControl(angleOut.withPosition(angle));
     }
