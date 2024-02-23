@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -9,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,8 +29,14 @@ public class Arm  extends SubsystemBase{
              .withKG(ArmConstants.holdAt0)
              .withGravityType(GravityTypeValue.Arm_Cosine);
         mctrl.apply(pid);
-        var out = new MotorOutputConfigs() .withInverted(InvertedValue.Clockwise_Positive) .withNeutralMode(NeutralModeValue.Brake);
+        var out = new MotorOutputConfigs()
+             .withInverted(InvertedValue.Clockwise_Positive)
+             .withNeutralMode(NeutralModeValue.Brake);
         mctrl.apply(out);
+        var limitCfg = new HardwareLimitSwitchConfigs() 
+            .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
+            .withReverseLimitEnable(true);
+        mctrl.apply(limitCfg);
     }
 
     @Override
@@ -52,7 +60,8 @@ public class Arm  extends SubsystemBase{
     }
     private final TalonFX motor = new TalonFX(ArmConstants.ArmID);
     private final StatusSignal<Double> angle = motor.getPosition();
-    private final PositionVoltage angleOut = new PositionVoltage(0) .withSlot(0);
+    private final PositionVoltage angleOut = new PositionVoltage(0) .withSlot(0)
+        .withLimitReverseMotion(true);
     /**  used only in periodic() */
     private int periodicdelay = 0;
 }
