@@ -34,9 +34,9 @@ public final class Constants {
     public static final double gearing = 6 /* sprocket */ * 100 /* gearbox */ /1;
     public static final int ArmID = 10;
     public static final double holdAt0 = 8 /* volts */; // test Voltage to stay up at moment arm horizontal
-    public static final double lowerLimit = 0;
+    public static final double lowerLimit = -14. /*degrees */ / 360 /* degrees / rotation */;
     public static final double upperLimit = .25 /* rotation */;
-    public static final double kP = 12. /* volts */ / 1/* rotation */;
+    public static final double kP = 12. /* volts */ / (upperLimit - lowerLimit) /* rotation */;
   }
   public static class ShooterConstants {
     public static final double shootGearing = 2./3;

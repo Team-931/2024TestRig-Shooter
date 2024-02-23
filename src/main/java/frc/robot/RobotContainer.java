@@ -35,9 +35,9 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     // testing only . . .
-    arm.setDefaultCommand(
+    /* arm.setDefaultCommand(
       arm.run(() -> {arm.gotoAngle(-opStick.getLeftY());}));
-  }
+   */}
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -75,6 +75,10 @@ public class RobotContainer {
     /* y button: shooter shoot */
       opStick.y() .onTrue(shooter.shootCommand(1))
                   .onFalse(shooter.shootCommand(0));
+                
+      /* a button: arm up */
+      opStick.a() .onTrue(arm.upCmd(true))
+                  .onFalse(arm.upCmd(false));
   }
 
   /**
