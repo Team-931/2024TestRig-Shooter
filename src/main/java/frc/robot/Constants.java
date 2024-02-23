@@ -21,6 +21,7 @@ public final class Constants {
     public static final int leftID = 11, rightID = 12;
   }
   public static class DriveConstants {
+    /* IDs are assigned clockwise from front left. */
     public static final int driveIDs[] = {1,3,5,7},
                             turnIDs[]  = {2,4,6,8};
     
