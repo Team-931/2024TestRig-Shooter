@@ -56,10 +56,6 @@ public class Arm  extends SubsystemBase{
       }
     }
 
-    public void off() {
-        motor.setControl(new NeutralOut());
-    }
-
     public double getAngle() {
         return angle.refresh().getValueAsDouble();
     }
@@ -75,8 +71,7 @@ public class Arm  extends SubsystemBase{
     private final TalonFX motor = new TalonFX(ArmConstants.ArmID);
     private final StatusSignal<Double> angle = motor.getPosition(), voltage = motor.getMotorVoltage();
     private final StatusSignal<ReverseLimitValue> limit = motor.getReverseLimit();
-    private final PositionVoltage angleOut = new PositionVoltage(0) .withSlot(0)
-        /* .withLimitReverseMotion(true) */;
+    private final PositionVoltage angleOut = new PositionVoltage(0) .withSlot(0);
     /**  used only in periodic() */
     private int periodicdelay = 0;
 }
