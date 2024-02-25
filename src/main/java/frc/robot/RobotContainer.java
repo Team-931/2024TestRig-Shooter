@@ -79,6 +79,7 @@ public class RobotContainer {
       /* a button: arm up */
       opStick.a() .onTrue(arm.upCmd(true))
                   .onFalse(arm.upCmd(false));
+      opStick.x() .onTrue(arm.run(() -> {arm.off();}));
   }
 
   /**
