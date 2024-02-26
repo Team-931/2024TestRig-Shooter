@@ -27,7 +27,6 @@ public class Arm  extends SubsystemBase{
         var mctrl = motor.getConfigurator();
         mctrl.setPosition(ArmConstants.lowerLimit);
         var sensConfigs = new FeedbackConfigs();
-        //sensConfigs.FeedbackRotorOffset = angle.getValueAsDouble();
         sensConfigs.SensorToMechanismRatio = ArmConstants.gearing;
         mctrl.apply(sensConfigs);
         var pid = new Slot0Configs()

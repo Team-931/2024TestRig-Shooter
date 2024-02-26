@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,6 +26,7 @@ public class RobotContainer {
   private final Shooter shooter = new Shooter();
   private final Intake intake = new Intake();
   private final Arm arm = new Arm();
+  private final Climber climber = new Climber();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController opStick =
@@ -79,6 +81,11 @@ public class RobotContainer {
       /* a button: arm up */
       opStick.a() .onTrue(arm.upCmd(true))
                   .onFalse(arm.upCmd(false));
+
+      /* x button: release climber */
+      opStick.x() .onTrue(climber.topOrBottomCommand(true));
+      /* b button: retract climber and stop */
+      opStick.b() .whileTrue(climber.topOrBottomCommand(false));
   }
 
   /**
