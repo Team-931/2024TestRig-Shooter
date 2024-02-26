@@ -33,7 +33,8 @@ public final class Constants {
   }
   public static class  ArmConstants {
     public static final double gearing = 6 /* sprocket */ * 100 /* gearbox */ /1;
-    public static final int ArmID = 10;
+    public static final int ArmID = 10,
+          boreEncoderID = 0;
     public static final double rampTime = 1 /* sec */;
     public static final double holdAt0 = 8 /* volts */; // test Voltage to stay up at moment arm horizontal
     public static final double lowerLimit = -14. /*degrees */ / 360 /* degrees / rotation */;

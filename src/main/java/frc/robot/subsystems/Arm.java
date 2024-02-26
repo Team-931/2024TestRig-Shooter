@@ -14,6 +14,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -49,6 +50,7 @@ public class Arm  extends SubsystemBase{
       else {
         periodicdelay = 10;
         SmartDashboard.putString("arm angle", angle.refresh().toString());
+        SmartDashboard.putNumber("arm angle 2", boreEncoder.getAbsolutePosition());
         SmartDashboard.putString("armVoltage", voltage.refresh().toString());
         SmartDashboard.putString("limit", limit.refresh().toString());
         
@@ -71,6 +73,8 @@ public class Arm  extends SubsystemBase{
     private final StatusSignal<Double> angle = motor.getPosition(), voltage = motor.getMotorVoltage();
     private final StatusSignal<ReverseLimitValue> limit = motor.getReverseLimit();
     private final PositionVoltage angleOut = new PositionVoltage(0) .withSlot(0);
+
+    private final DutyCycleEncoder boreEncoder = new DutyCycleEncoder(ArmConstants.boreEncoderID);
     /**  used only in periodic() */
     private int periodicdelay = 0;
 }
