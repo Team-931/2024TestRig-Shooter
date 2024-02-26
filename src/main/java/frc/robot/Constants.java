@@ -37,8 +37,9 @@ public final class Constants {
           boreEncoderID = 0;
     public static final double rampTime = 1 /* sec */;
     public static final double holdAt0 = 8 /* volts */; // test Voltage to stay up at moment arm horizontal
-    public static final double lowerLimit = -14. /*degrees */ / 360 /* degrees / rotation */;
-    public static final double upperLimit = .25 /* rotation */;
+    public static final double boreOffset = .66;
+    public static final double lowerLimit = -14. /*degrees */ / 360 /* degrees / rotation */+ .07;
+    public static final double upperLimit = .25 /* rotation */;//maybe .28
     public static final double kP = 12. /* volts */ / (upperLimit - lowerLimit) /* rotation */;
   }
   public static class ShooterConstants {

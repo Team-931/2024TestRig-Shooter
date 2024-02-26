@@ -22,6 +22,8 @@ import frc.robot.Constants.ArmConstants;
 
 public class Arm  extends SubsystemBase{
     public Arm() {
+        boreEncoder.setPositionOffset(ArmConstants.boreOffset - ArmConstants.lowerLimit);
+        boreEncoder.setDistancePerRotation(-1);
         var mctrl = motor.getConfigurator();
         mctrl.setPosition(ArmConstants.lowerLimit);
         var sensConfigs = new FeedbackConfigs();
@@ -50,7 +52,7 @@ public class Arm  extends SubsystemBase{
       else {
         periodicdelay = 10;
         SmartDashboard.putString("arm angle", angle.refresh().toString());
-        SmartDashboard.putNumber("arm angle 2", boreEncoder.getAbsolutePosition());
+        SmartDashboard.putNumber("arm angle 2", boreEncoder.getDistance());
         SmartDashboard.putString("armVoltage", voltage.refresh().toString());
         SmartDashboard.putString("limit", limit.refresh().toString());
         
