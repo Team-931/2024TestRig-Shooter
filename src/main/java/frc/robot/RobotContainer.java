@@ -6,7 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -20,6 +24,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Shooter shooter = new Shooter();
+  private final Intake intake = new Intake();
+  private final Arm arm = new Arm();
+  private final Climber climber = new Climber();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController opStick =
@@ -29,7 +36,10 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-  }
+    // testing only . . .
+    /* arm.setDefaultCommand(
+      arm.run(() -> {arm.gotoAngle(-opStick.getLeftY());}));
+   */}
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -48,16 +58,34 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(shooter.exampleMethodCommand());
-    {/* left and right buttons: forward and reverse shooter hold */
-      final var left = opStick.leftBumper().and(opStick.rightBumper().negate());
-      final var right = opStick.rightBumper().and(opStick.leftBumper().negate());
-    left.onTrue(shooter.holdCommand(ShooterConstants.holdFwd));
-    right.onTrue(shooter.holdCommand(ShooterConstants.holdRvs));
-    left.or(right).onFalse(shooter.holdCommand(0));
-    }
+    /* leftBumper and rightBumper buttons: forward and reverse shooter hold */
+      opStick.leftBumper().and(opStick.rightBumper().negate()) .onTrue(shooter.holdCommand(ShooterConstants.holdFwd)
+          .andThen(intake.runIf(.3, () -> {
+            var a = arm.getAngle() < 1./72;
+            SmartDashboard.putBoolean("Arm test", a);
+            return a;})))
+        .or(
+      opStick.rightBumper().and(opStick.leftBumper().negate()) .onTrue(shooter.holdCommand(ShooterConstants.holdRvs)
+          .andThen(intake.runIf(-.3, () -> {
+            var a = arm.getAngle() < 1./72;
+            SmartDashboard.putBoolean("Arm test", a);
+            return a;})))
+        )
+                                            .onFalse(shooter.holdCommand(0)
+                                            .andThen(intake.runcommand(0)));
+    
     /* y button: shooter shoot */
-    opStick.y().onTrue(shooter.shootCommand(1));
-    opStick.y().onFalse(shooter.shootCommand(0));
+      opStick.y() .onTrue(shooter.shootCommand(1))
+                  .onFalse(shooter.shootCommand(0));
+                
+      /* a button: arm up */
+      opStick.a() .onTrue(arm.upCmd(true))
+                  .onFalse(arm.upCmd(false));
+
+      /* x button: release climber */
+      opStick.x() .onTrue(climber.topOrBottomCommand(true));
+      /* b button: retract climber and stop */
+      opStick.b() .whileTrue(climber.topOrBottomCommand(false));
   }
 
   /**
@@ -68,5 +96,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return null; //Autos.exampleAuto(shooter);
+  }
+
+  public void simulationInit() {
+    shooter.simulationInit();
   }
 }
