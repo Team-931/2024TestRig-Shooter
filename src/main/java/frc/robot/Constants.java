@@ -19,7 +19,7 @@ public final class Constants {
   public static class ClimberConstants {
   
     public static final int leftID = 11, rightID = 12;
-    public static final double gearing = 12 /* gearbox */ * .75 /* in. diam */ * Math.PI;
+    public static final double gearing = 12 /* gearbox */ / .75 /* in. diam */ / Math.PI;
     public static final double maxHeight = 19.5 /* inch */;
   }
   public static class DriveConstants {

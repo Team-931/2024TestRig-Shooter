@@ -24,17 +24,17 @@ public class Climber extends SubsystemBase {
 
     public Climber() {
         var mctrl = leftMotor.getConfigurator();
-        mctrl.setPosition(0);
         var sensConfigs = new FeedbackConfigs();
         sensConfigs.SensorToMechanismRatio = ClimberConstants.gearing;
         mctrl.apply(sensConfigs);
+        mctrl.setPosition(0);
         var pid = new Slot0Configs()
              .withKP(/* ArmConstants.kP */1) 
              //.withKG(ArmConstants.holdAt0)
              .withGravityType(GravityTypeValue.Elevator_Static);
         mctrl.apply(pid);
         var out = new MotorOutputConfigs()
-             .withInverted(InvertedValue.Clockwise_Positive)
+             .withInverted(InvertedValue.CounterClockwise_Positive)
              .withNeutralMode(NeutralModeValue.Brake);
         mctrl.apply(out);
         /* var limitCfg = new HardwareLimitSwitchConfigs() 
