@@ -35,7 +35,7 @@ public class Arm  extends SubsystemBase{
              .withGravityType(GravityTypeValue.Arm_Cosine);
         mctrl.apply(pid);
         var out = new MotorOutputConfigs()
-             .withInverted(InvertedValue.Clockwise_Positive)
+             .withInverted(InvertedValue.CounterClockwise_Positive)
              .withNeutralMode(NeutralModeValue.Brake);
         mctrl.apply(out);
         var limitCfg = new HardwareLimitSwitchConfigs() 
