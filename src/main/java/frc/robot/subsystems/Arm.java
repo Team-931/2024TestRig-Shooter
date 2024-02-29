@@ -22,10 +22,9 @@ import frc.robot.Constants.ArmConstants;
 
 public class Arm  extends SubsystemBase{
     public Arm() {
-        boreEncoder.setPositionOffset(ArmConstants.boreOffset - ArmConstants.lowerLimit);
         boreEncoder.setDistancePerRotation(-1);
+        boreEncoder.setPositionOffset(ArmConstants.boreOffset + ArmConstants.lowerLimit);
         var mctrl = motor.getConfigurator();
-        mctrl.setPosition(ArmConstants.lowerLimit);
         var sensConfigs = new FeedbackConfigs();
         sensConfigs.SensorToMechanismRatio = ArmConstants.gearing;
         mctrl.apply(sensConfigs);
@@ -38,6 +37,7 @@ public class Arm  extends SubsystemBase{
              .withInverted(InvertedValue.CounterClockwise_Positive)
              .withNeutralMode(NeutralModeValue.Brake);
         mctrl.apply(out);
+        mctrl.setPosition(ArmConstants.lowerLimit);
         var limitCfg = new HardwareLimitSwitchConfigs() 
             .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
             .withReverseLimitEnable(true);
@@ -50,8 +50,10 @@ public class Arm  extends SubsystemBase{
         if (periodicdelay > 0) --periodicdelay;
       else {
         periodicdelay = 10;
+        double ang = boreEncoder.getDistance();
+        motor.setPosition(ang);
         SmartDashboard.putString("arm angle", angle.refresh().toString());
-        SmartDashboard.putNumber("arm angle 2", boreEncoder.getDistance());
+        SmartDashboard.putNumber("arm angle 2", ang);
         SmartDashboard.putString("armVoltage", voltage.refresh().toString());
         SmartDashboard.putString("limit", limit.refresh().toString());
         
@@ -60,6 +62,9 @@ public class Arm  extends SubsystemBase{
 
     public double getAngle() {
         return angle.refresh().getValueAsDouble();
+    }
+    public boolean atBottom() {
+        return getAngle() < ArmConstants.lowerLimit + 1./72;
     }
     public Command upCmd(boolean b) {
         return runOnce(() -> {gotoAngle(b ? ArmConstants.upperLimit: ArmConstants.lowerLimit);});

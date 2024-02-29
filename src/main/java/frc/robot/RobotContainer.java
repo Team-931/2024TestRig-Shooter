@@ -61,13 +61,13 @@ public class RobotContainer {
     /* leftBumper and rightBumper buttons: forward and reverse shooter hold */
       opStick.leftBumper().and(opStick.rightBumper().negate()) .onTrue(shooter.holdCommand(ShooterConstants.holdFwd)
           .andThen(intake.runIf(.3, () -> {
-            var a = arm.getAngle() < 1./72;
+            var a = arm.atBottom();
             SmartDashboard.putBoolean("Arm test", a);
             return a;})))
         .or(
       opStick.rightBumper().and(opStick.leftBumper().negate()) .onTrue(shooter.holdCommand(ShooterConstants.holdRvs)
           .andThen(intake.runIf(-.3, () -> {
-            var a = arm.getAngle() < 1./72;
+            var a = arm.atBottom();
             SmartDashboard.putBoolean("Arm test", a);
             return a;})))
         )
