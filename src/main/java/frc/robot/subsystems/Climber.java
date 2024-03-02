@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -20,6 +21,7 @@ public class Climber extends SubsystemBase {
     private final TalonFX   leftMotor = new TalonFX(ClimberConstants.leftID), 
                             rightMotor = new TalonFX(ClimberConstants.rightID);
     private final PositionVoltage heightReq = new PositionVoltage(0);
+    private final CoastOut coastOut = new CoastOut();
     private final StatusSignal<Double> ht = leftMotor.getPosition();
 
     public Climber() {
@@ -37,6 +39,7 @@ public class Climber extends SubsystemBase {
              .withInverted(InvertedValue.CounterClockwise_Positive)
              .withNeutralMode(NeutralModeValue.Brake);
         mctrl.apply(out);
+        rightMotor.setNeutralMode(NeutralModeValue.Brake);
         /* var limitCfg = new HardwareLimitSwitchConfigs() 
             .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
             .withReverseLimitEnable(true);
@@ -49,6 +52,10 @@ public class Climber extends SubsystemBase {
         leftMotor.setControl(heightReq.withPosition(height));
     }
 
+    public void coast() {
+        leftMotor.setControl(coastOut);
+    }
+
     public Command heightCommand (double height) {
         return startEnd(() -> {gotoHeight(height);}, () -> {gotoHeight(ht.refresh().getValueAsDouble());});
     }
@@ -58,5 +65,8 @@ public class Climber extends SubsystemBase {
     }
     public Command topOrBottomCommand(boolean isTop) {
         return heightCommand(isTop ? ClimberConstants.maxHeight : 0);
+    }
+    public Command coastCommand() {
+        return runOnce(() -> {coast();});
     }
 }
