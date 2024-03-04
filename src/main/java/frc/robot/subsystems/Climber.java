@@ -34,7 +34,7 @@ public class Climber extends SubsystemBase {
              .withGravityType(GravityTypeValue.Elevator_Static);
         mctrl.apply(pid);
         var out = new MotorOutputConfigs()
-             .withInverted(InvertedValue.CounterClockwise_Positive)
+             .withInverted(InvertedValue.Clockwise_Positive)
              .withNeutralMode(NeutralModeValue.Brake);
         mctrl.apply(out);
         /* var limitCfg = new HardwareLimitSwitchConfigs() 
@@ -42,6 +42,7 @@ public class Climber extends SubsystemBase {
             .withReverseLimitEnable(true);
         mctrl.apply(limitCfg); */
         mctrl.apply(new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(/* ArmConstants.rampTime */1));
+        rightMotor.getConfigurator().apply(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
         rightMotor.setControl(new Follower(ClimberConstants.leftID, true));
     }   
     

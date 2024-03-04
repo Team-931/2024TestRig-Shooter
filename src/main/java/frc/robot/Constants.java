@@ -34,12 +34,12 @@ public final class Constants {
    public static final int intakeID = 15;
   }
   public static class  ArmConstants {
-    public static final double gearing = 6 /* sprocket */ * 100 /* gearbox */ /1;
+    public static final double gearing = 5 /* sprocket */ * 100 /* gearbox */ /1;
     public static final int ArmID = 10,
           boreEncoderID = 0;
     public static final double rampTime = 1 /* sec */;
     public static final double holdAt0 = 8 /* volts */; // test Voltage to stay up at moment arm horizontal
-    public static final double boreOffset = .66;
+    public static final double boreOffset = .662;
     public static final double lowerLimit = -14. /*degrees */ / 360 /* degrees / rotation */+ .07;
     public static final double upperLimit = .28 /* rotation */;
     /** full power at 1/9 of full range i. e. >= 3 inches to go */
@@ -48,8 +48,8 @@ public final class Constants {
   public static class ShooterConstants {
     public static final double shootGearing = 2./3;
     
-    public static final double shootTopSpd = -60*shootGearing,
-      shootBottomSpd = -60*shootGearing,
+    public static final double shootTopSpd = -120*shootGearing,
+      shootBottomSpd = 27.5 / 80 * shootTopSpd,
       holdBackSpd = .3, holdFrontSpd = -.3, holdFwd = 1, holdRvs = -1;
 
     public static final int shootBottomID = 22, shootTopID = 23,
