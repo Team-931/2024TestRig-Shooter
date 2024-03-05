@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.CoastOut;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -25,36 +24,44 @@ public class Climber extends SubsystemBase {
     private final StatusSignal<Double> ht = leftMotor.getPosition();
 
     public Climber() {
-        var mctrl = leftMotor.getConfigurator();
+        var lctrl = leftMotor.getConfigurator();
+        var rctrl = rightMotor.getConfigurator();
         var sensConfigs = new FeedbackConfigs();
         sensConfigs.SensorToMechanismRatio = ClimberConstants.gearing;
-        mctrl.apply(sensConfigs);
-        mctrl.setPosition(0);
+        lctrl.apply(sensConfigs);
+        lctrl.setPosition(0);
+        rctrl.apply(sensConfigs);
+        rctrl.setPosition(0);
         var pid = new Slot0Configs()
              .withKP(/* ArmConstants.kP */1) 
              //.withKG(ArmConstants.holdAt0)
              .withGravityType(GravityTypeValue.Elevator_Static);
-        mctrl.apply(pid);
+        lctrl.apply(pid);
+        rctrl.apply(pid);
         var out = new MotorOutputConfigs()
              .withInverted(InvertedValue.Clockwise_Positive)
              .withNeutralMode(NeutralModeValue.Brake);
-        mctrl.apply(out);
-        rightMotor.setNeutralMode(NeutralModeValue.Brake);
+        lctrl.apply(out);
+        rctrl.apply(out.withInverted(InvertedValue.CounterClockwise_Positive));
         /* var limitCfg = new HardwareLimitSwitchConfigs() 
             .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
             .withReverseLimitEnable(true);
         mctrl.apply(limitCfg); */
-        mctrl.apply(new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(/* ArmConstants.rampTime */1));
-        rightMotor.getConfigurator().apply(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
+        var cc = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(/* ArmConstants.rampTime */1);
+        lctrl.apply(cc);
+        rctrl.apply(cc);
+/*         rightMotor.getConfigurator().apply(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
         rightMotor.setControl(new Follower(ClimberConstants.leftID, true));
-    }   
+ */    }   
     
     public void gotoHeight(double height) {
         leftMotor.setControl(heightReq.withPosition(height));
+        rightMotor.setControl(heightReq);
     }
 
     public void coast() {
         leftMotor.setControl(coastOut);
+        rightMotor.setControl(coastOut);
     }
 
     public Command heightCommand (double height) {
