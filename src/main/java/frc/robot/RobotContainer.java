@@ -83,7 +83,7 @@ public class RobotContainer {
                   .onFalse(arm.upCmd(false));
 
       /* x button: release climber */
-      opStick.x() .onTrue(climber.coastCommand()/* topOrBottomCommand(true) */);
+      opStick.x() .onTrue(climber.topOrBottomCommand(true));
       /* b button: retract climber and stop */
       opStick.b() .whileTrue(climber.topOrBottomCommand(false));
   }
