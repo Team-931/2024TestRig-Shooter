@@ -4,9 +4,10 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -42,6 +43,8 @@ public class Arm  extends SubsystemBase{
             .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
             .withReverseLimitEnable(true);
         mctrl.apply(limitCfg);
+        var motMag = new MotionMagicConfigs() .withMotionMagicAcceleration(2) . withMotionMagicCruiseVelocity(20);
+        mctrl.apply(motMag);
         mctrl.apply(new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(ArmConstants.rampTime));
     }
 
@@ -78,7 +81,7 @@ public class Arm  extends SubsystemBase{
     private final TalonFX motor = new TalonFX(ArmConstants.ArmID);
     private final StatusSignal<Double> angle = motor.getPosition(), voltage = motor.getMotorVoltage();
     private final StatusSignal<ReverseLimitValue> limit = motor.getReverseLimit();
-    private final PositionVoltage angleOut = new PositionVoltage(0) .withSlot(0);
+    private final MotionMagicVoltage angleOut = new MotionMagicVoltage(0) .withSlot(0);
 
     private final DutyCycleEncoder boreEncoder = new DutyCycleEncoder(ArmConstants.boreEncoderID);
     /**  used only in periodic() */

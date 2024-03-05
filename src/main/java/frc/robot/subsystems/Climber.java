@@ -65,7 +65,7 @@ public class Climber extends SubsystemBase {
     }
 
     public Command heightCommand (double height) {
-        return startEnd(() -> {gotoHeight(height);}, () -> {gotoHeight(ht.refresh().getValueAsDouble());});
+        return runOnce(() -> {gotoHeight(height);});
     }
 
     public Command stayPutCommand() {

@@ -10,8 +10,10 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -59,7 +61,7 @@ public class RobotContainer {
     // cancelling on release.
     //m_driverController.b().whileTrue(shooter.exampleMethodCommand());
     /* leftBumper and rightBumper buttons: forward and reverse shooter hold */
-      opStick.leftBumper().and(opStick.rightBumper().negate()) .onTrue(shooter.holdCommand(ShooterConstants.holdFwd)
+      opStick.leftBumper().and(opStick.rightBumper().negate()).and(new Trigger (shooter::sensorOff)) .onTrue(shooter.holdCommand(ShooterConstants.holdFwd)
           .andThen(intake.runIf(.3, () -> {
             var a = arm.atBottom();
             SmartDashboard.putBoolean("Arm test", a);
@@ -71,12 +73,15 @@ public class RobotContainer {
             SmartDashboard.putBoolean("Arm test", a);
             return a;})))
         )
-                                            .onFalse(shooter.holdCommand(0)
+                                            .onFalse(shooter.holdCommand(0) // possible bug !!! Line 85 may counteract it
                                             .andThen(intake.runcommand(0)));
     
     /* y button: shooter shoot */
-      opStick.y() .onTrue(shooter.shootCommand(1))
-                  .onFalse(shooter.shootCommand(0));
+      opStick.y() .onTrue(shooter.shootCommand(1)
+                      .andThen( new WaitUntilCommand(shooter::shootFastEnough), 
+                                shooter.holdCommand(ShooterConstants.holdFwd))) // possible bug !!! Line 79 may counteract it
+                  .onFalse(shooter.shootCommand(0)
+                      .andThen(shooter.holdCommand(0)));
                 
       /* a button: arm up */
       opStick.a() .onTrue(arm.upCmd(true))
@@ -85,7 +90,8 @@ public class RobotContainer {
       /* x button: release climber */
       opStick.x() .onTrue(climber.topOrBottomCommand(true));
       /* b button: retract climber and stop */
-      opStick.b() .whileTrue(climber.topOrBottomCommand(false));
+      opStick.b() .onTrue(climber.topOrBottomCommand(false))
+                  .onFalse(climber.stayPutCommand());
   }
 
   /**

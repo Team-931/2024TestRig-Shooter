@@ -89,15 +89,17 @@ public class Shooter extends SubsystemBase {
   }
 
     /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
+   * tests the line break sensor
+   * @return true if line is not broken
    */
-/*   public boolean exampleCondition() {
+  public boolean sensorOff() {
     // Query some boolean state, such as a digital sensor.
-    return false;
+    return sensor.getVoltage() <= 2;
   }
- */
+
+  public boolean shootFastEnough() {
+    return shVel.getValueAsDouble() < .95 * ShooterConstants.shootBottomSpd;
+  }
 
     /** This method will be called once per scheduler run
      * (every 20 ms).
@@ -157,7 +159,7 @@ public class Shooter extends SubsystemBase {
   private final AnalogInput sensor = new AnalogInput(ShooterConstants.sensorID);
 /**  used only in periodic() */
   private int periodicdelay = 0;
-  private final StatusSignal<Double> shVel = shootTop.getVelocity();
+  private final StatusSignal<Double> shVel = shootBottom.getVelocity();
   private final RelativeEncoder holdEnc = holdBack.getEncoder();
   {
     holdEnc.setVelocityConversionFactor(ShooterConstants.RpM2RpS);
