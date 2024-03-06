@@ -48,7 +48,7 @@ public class Climber extends SubsystemBase {
             .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
             .withReverseLimitEnable(true);
         mctrl.apply(limitCfg); */
-        var cc = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(/* ArmConstants.rampTime */1);
+        var cc = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(/* ArmConstants.rampTime */.1);
         lctrl.apply(cc);
         rctrl.apply(cc);
 /*         rightMotor.getConfigurator().apply(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));

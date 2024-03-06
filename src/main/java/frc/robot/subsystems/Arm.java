@@ -31,7 +31,8 @@ public class Arm  extends SubsystemBase{
         mctrl.apply(sensConfigs);
         var pid = new Slot0Configs()
              .withKP(ArmConstants.kP) 
-             //.withKG(ArmConstants.holdAt0)
+             .withKG(ArmConstants.holdAt0)
+             .withKI(ArmConstants.kD)
              .withGravityType(GravityTypeValue.Arm_Cosine);
         mctrl.apply(pid);
         var out = new MotorOutputConfigs()
