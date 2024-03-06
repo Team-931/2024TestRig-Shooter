@@ -21,7 +21,8 @@ public class Climber extends SubsystemBase {
                             rightMotor = new TalonFX(ClimberConstants.rightID);
     private final PositionVoltage heightReq = new PositionVoltage(0);
     private final CoastOut coastOut = new CoastOut();
-    private final StatusSignal<Double> ht = leftMotor.getPosition();
+    private final StatusSignal<Double>  leftHt = leftMotor.getPosition(),
+                                        rightHt= rightMotor.getPosition();
 
     public Climber() {
         var lctrl = leftMotor.getConfigurator();
@@ -68,9 +69,15 @@ public class Climber extends SubsystemBase {
         return runOnce(() -> {gotoHeight(height);});
     }
 
-    public Command stayPutCommand() {
-        return runOnce(() -> {gotoHeight(ht.refresh().getValueAsDouble());});
+    public void stayPut() {
+        leftMotor.setControl(heightReq.withPosition(leftHt.refresh().getValueAsDouble()));
+        rightMotor.setControl(heightReq.withPosition(rightHt.refresh().getValueAsDouble()));
     }
+
+    public Command stayPutCommand() {
+        return runOnce(this::stayPut);
+    }
+
     public Command topOrBottomCommand(boolean isTop) {
         return heightCommand(isTop ? ClimberConstants.maxHeight : 0);
     }

@@ -20,6 +20,9 @@ public final class Constants {
   
     public static final int leftID = 11, rightID = 12;
     public static final double gearing = 12 /* gearbox */ / .75 /* in. diam */ / Math.PI;
+    /** The maxHeight is physically 19.5 in. but the gearing is too large 
+     * at the bottom: the diameter increases as the rope winds up.
+     */
     public static final double maxHeight = 13.5 /* inch */;
   }
   public static class DriveConstants {
