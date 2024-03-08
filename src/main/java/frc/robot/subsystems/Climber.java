@@ -69,9 +69,18 @@ public class Climber extends SubsystemBase {
         return runOnce(() -> {gotoHeight(height);});
     }
 
+    public boolean currentHigh(boolean isLeft) {
+        return isLeft ?leftMotor.getStatorCurrent().getValue() > ClimberConstants.currentHigh : rightMotor.getStatorCurrent().getValue() > ClimberConstants.currentHigh;
+    }
+
     public void stayPut() {
         leftMotor.setControl(heightReq.withPosition(leftHt.refresh().getValueAsDouble()));
         rightMotor.setControl(heightReq.withPosition(rightHt.refresh().getValueAsDouble()));
+    }
+
+    public void stayPut1(boolean isLeft) {
+        if(isLeft)  leftMotor.setControl(heightReq.withPosition(leftHt.refresh().getValueAsDouble()));
+        else        rightMotor.setControl(heightReq.withPosition(rightHt.refresh().getValueAsDouble()));
     }
 
     public Command stayPutCommand() {

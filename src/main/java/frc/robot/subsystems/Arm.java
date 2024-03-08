@@ -56,6 +56,11 @@ public class Arm  extends SubsystemBase{
         periodicdelay = 10;
         double ang = boreEncoder.getDistance();
         motor.setPosition(ang);
+        boolean motorStopping;
+        if(angleOut.Position == ArmConstants.lowerLimit && ang < ArmConstants.lowerLimit + .005)
+            {motor.stopMotor(); motorStopping = true;}
+            else motorStopping = false;
+        SmartDashboard.putBoolean("motor stopping", motorStopping);
         SmartDashboard.putString("arm angle", angle.refresh().toString());
         SmartDashboard.putNumber("arm angle 2", ang);
         SmartDashboard.putString("armVoltage", voltage.refresh().toString());

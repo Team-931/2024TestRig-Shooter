@@ -24,6 +24,7 @@ public final class Constants {
      * at the bottom: the diameter increases as the rope winds up.
      */
     public static final double maxHeight = 13.5 /* inch */;
+    public static final double currentHigh = 50;
   }
   public static class DriveConstants {
     /* IDs are assigned clockwise from front left. */

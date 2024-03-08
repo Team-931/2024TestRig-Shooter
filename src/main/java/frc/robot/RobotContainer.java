@@ -90,8 +90,13 @@ public class RobotContainer {
       /* x button: release climber */
       opStick.x() .onTrue(climber.topOrBottomCommand(true));
       /* b button: retract climber and stop */
-      opStick.b() .onTrue(climber.topOrBottomCommand(false))
+      opStick.b() .onTrue(climber.topOrBottomCommand(false)) 
                   .onFalse(climber.stayPutCommand());
+
+      new Trigger(() -> climber.currentHigh(true))
+                  .onTrue(climber.runOnce(() -> climber.stayPut1(true)));
+      new Trigger(() -> climber.currentHigh(false))
+                  .onTrue(climber.runOnce(() -> climber.stayPut1(false)));
   }
 
   /**
