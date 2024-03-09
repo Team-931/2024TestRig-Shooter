@@ -78,30 +78,36 @@ public class RobotContainer {
                                             .andThen(intake.runcommand(0)));
     
     /* y button: shooter shoot */
-      opStick.button(6) .or (opStick.button(1))
+      opStick.button(1)
                   .onTrue(shooter.shootCommand(1)
                       .andThen( new WaitUntilCommand(shooter::shootFastEnough), 
                                 shooter.holdCommand(ShooterConstants.holdFwd))) // possible bug !!! Line 79 may counteract it
                   .onFalse(shooter.shootCommand(0)
                       .andThen(shooter.holdCommand(0)));
-                
+      opStick.button(6)  .onTrue(shooter.shootCommand(1))
+                                .onFalse(shooter.shootCommand(0));
+      opStick.button(5)  .onTrue(shooter.holdCommand(ShooterConstants.holdFwd))
+                                .onFalse(shooter.holdCommand(0));
       /* a button: arm up */
       opStick.button(2) .onTrue(arm.upCmd(true));
       opStick.button(7) .onTrue(arm.upCmd(false));
 
       /* x button: release climber */
-      opStick.button(3) .onTrue(climber.topOrBottomCommand(true));
+      opStick.button(3) .and(opStick.button(4).negate()) .onTrue(climber.topOrBottomCommand(true))
+        .or (
       /* b button: retract climber and stop */
-      opStick.button(4) .onTrue(climber.topOrBottomCommand(false)) 
-                  .onFalse(climber.stayPutCommand());
+      opStick.button(4) .and(opStick.button(3).negate()) .onTrue(climber.topOrBottomCommand(false)) 
+        )
+        .or (
+      opStick.button(3) .and(opStick.button(4)) .onTrue(climber.windDownCommand())
+        )
+                          .onFalse(climber.stayPutCommand());
 
       new Trigger(() -> climber.currentHigh(true))
                   .onTrue(climber.runOnce(() -> climber.stayPut1(true)));
       new Trigger(() -> climber.currentHigh(false))
                   .onTrue(climber.runOnce(() -> climber.stayPut1(false)));
-
-      opStick.button(5) .onTrue(climber.windDownCommand());
-  }
+}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
