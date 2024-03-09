@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants.ShooterConstants;
 
@@ -67,7 +67,7 @@ public class Shooter extends SubsystemBase {
         () -> {
           /* one-time action goes here */
           setHold(h);
-          SmartDashboard.putNumber("holding:", h);
+          /* SmartDashboard.putNumber("holding:", h); */
         });
   }
 
@@ -84,7 +84,7 @@ public class Shooter extends SubsystemBase {
         () -> {
           /* one-time action goes here */
           holdIng = h;
-          SmartDashboard.putNumber("holding:", h);
+          /* SmartDashboard.putNumber("holding:", h); */
         });
   }
 
@@ -111,7 +111,7 @@ public class Shooter extends SubsystemBase {
     //shootTop.set(ShooterConstants.shootTopSpd * shootIng);
     holdBack.set(ShooterConstants.holdBackSpd * holdIng);
     holdFront.set(ShooterConstants.holdFrontSpd * holdIngFront);
-    {
+/*     {
       if (periodicdelay > 0) --periodicdelay;
       else {
         periodicdelay = 10;
@@ -121,7 +121,7 @@ public class Shooter extends SubsystemBase {
         //SmartDashboard.putNumber("sensor Voltage", sensor.getVoltage());
       }
     }
-}
+ */}
 
   public void simulationInit() {
     REVPhysicsSim.getInstance().addSparkMax(holdBack, DCMotor.getNEO(1));
@@ -158,7 +158,7 @@ public class Shooter extends SubsystemBase {
    holdBack = new CANSparkMax(ShooterConstants.holdBackID, MotorType.kBrushless);
   private final AnalogInput sensor = new AnalogInput(ShooterConstants.sensorID);
 /**  used only in periodic() */
-  private int periodicdelay = 0;
+  //private int periodicdelay = 0;
   private final StatusSignal<Double> shVel = shootBottom.getVelocity();
   private final RelativeEncoder holdEnc = holdBack.getEncoder();
   {

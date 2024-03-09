@@ -11,7 +11,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
@@ -65,13 +65,13 @@ public class RobotContainer {
       opStick.axisGreaterThan(OperatorConstants.intakeAxis, OperatorConstants.intakeTheshhold).and(new Trigger (shooter::sensorOff)) .onTrue(shooter.holdCommand(ShooterConstants.holdFwd)
           .andThen(intake.runIf(.3, () -> {
             var a = arm.atBottom();
-            SmartDashboard.putBoolean("Arm test", a);
+            //SmartDashboard.putBoolean("Arm test", a);
             return a;})))
         .or(
       opStick.axisLessThan(OperatorConstants.intakeAxis, -OperatorConstants.intakeTheshhold) .onTrue(shooter.holdCommand(ShooterConstants.holdRvs)
           .andThen(intake.runIf(-.3, () -> {
             var a = arm.atBottom();
-            SmartDashboard.putBoolean("Arm test", a);
+            //SmartDashboard.putBoolean("Arm test", a);
             return a;})))
         )
                                             .onFalse(shooter.holdCommand(0) // possible bug !!! Line 85 may counteract it

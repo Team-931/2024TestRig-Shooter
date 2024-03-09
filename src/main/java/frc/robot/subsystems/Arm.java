@@ -16,7 +16,7 @@ import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -56,16 +56,16 @@ public class Arm  extends SubsystemBase{
         periodicdelay = 10;
         double ang = boreEncoder.getDistance();
         motor.setPosition(ang);
-        boolean motorStopping;
+        //boolean motorStopping;
         if(angleOut.Position == ArmConstants.lowerLimit && ang < ArmConstants.lowerLimit + .005)
-            {motor.stopMotor(); motorStopping = true;}
-            else motorStopping = false;
-        SmartDashboard.putBoolean("motor stopping", motorStopping);
+            {motor.stopMotor(); /* motorStopping = true; */}
+            //else motorStopping = false;
+/*         SmartDashboard.putBoolean("motor stopping", motorStopping);
         SmartDashboard.putString("arm angle", angle.refresh().toString());
         SmartDashboard.putNumber("arm angle 2", ang);
         SmartDashboard.putString("armVoltage", voltage.refresh().toString());
         SmartDashboard.putString("limit", limit.refresh().toString());
-        
+ */        
       }
     }
 
@@ -81,7 +81,7 @@ public class Arm  extends SubsystemBase{
     public void gotoAngle(double angle) {
         angle = Math.max(angle, ArmConstants.lowerLimit);
         angle = Math.min(angle, ArmConstants.upperLimit);
-        SmartDashboard.putNumber("desired angle", angle);
+        //SmartDashboard.putNumber("desired angle", angle);
         motor.setControl(angleOut.withPosition(angle));
     }
     private final TalonFX motor = new TalonFX(ArmConstants.ArmID);
