@@ -19,7 +19,8 @@ import frc.robot.Constants.ClimberConstants;
 public class Climber extends SubsystemBase {
     private final TalonFX   leftMotor = new TalonFX(ClimberConstants.leftID), 
                             rightMotor = new TalonFX(ClimberConstants.rightID);
-    private final PositionVoltage heightReq = new PositionVoltage(0);
+    private final PositionVoltage heightReq = new PositionVoltage(0),
+                                    pullReq = new PositionVoltage(0).withFeedForward(-ClimberConstants.supportVoltage);
     private final CoastOut coastOut = new CoastOut();
     private final StatusSignal<Double>  leftHt = leftMotor.getPosition(),
                                         rightHt= rightMotor.getPosition();
@@ -34,8 +35,8 @@ public class Climber extends SubsystemBase {
         rctrl.apply(sensConfigs);
         rctrl.setPosition(0);
         var pid = new Slot0Configs()
-             .withKP(/* ArmConstants.kP */1) 
-             //.withKG(ArmConstants.holdAt0)
+             .withKP(ClimberConstants.kP ) 
+             //.withKG(-ClimberConstants.supportVoltage)
              .withGravityType(GravityTypeValue.Elevator_Static);
         lctrl.apply(pid);
         rctrl.apply(pid);
@@ -65,14 +66,24 @@ public class Climber extends SubsystemBase {
         rightMotor.setControl(coastOut);
     }
 
+    public Command windDownCommand() {
+        return runOnce(() -> {
+            leftMotor.setVoltage(-2);
+            rightMotor.setVoltage(-2);
+        });
+    }
+
     public Command heightCommand (double height) {
         return runOnce(() -> {gotoHeight(height);});
     }
 
     public boolean currentHigh(boolean isLeft) {
-        return isLeft ?leftMotor.getStatorCurrent().getValue() > ClimberConstants.currentHigh : rightMotor.getStatorCurrent().getValue() > ClimberConstants.currentHigh;
+        return false; //currentHighHelp(isLeft ? leftMotor : rightMotor);
     }
 
+    private boolean currentHighHelp(TalonFX motor) {
+        return motor.getTorqueCurrent().getValueAsDouble() > ClimberConstants.currentHigh * motor.getMotorVoltage().getValueAsDouble();
+    }
     public void stayPut() {
         leftMotor.setControl(heightReq.withPosition(leftHt.refresh().getValueAsDouble()));
         rightMotor.setControl(heightReq.withPosition(rightHt.refresh().getValueAsDouble()));
@@ -88,7 +99,12 @@ public class Climber extends SubsystemBase {
     }
 
     public Command topOrBottomCommand(boolean isTop) {
-        return heightCommand(isTop ? ClimberConstants.maxHeight : 0);
+        if(isTop)
+        return heightCommand(ClimberConstants.maxHeight);
+        return runOnce(() -> {
+            leftMotor.setControl(pullReq);
+            rightMotor.setControl(pullReq);
+        });
     }
     public Command coastCommand() {
         return runOnce(() -> {coast();});

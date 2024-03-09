@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -13,18 +15,29 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final class FalconMotorConstants {
+    public static final double kFreeSpeedRpm = 6380, 
+    stallCurrent = 257 /* Amp */,
+    stallTorque = 4.69 /* Newton-m */;
+  }
   public static class OperatorConstants {
     public static final int opStickPort = 0;
+    public static final int intakeAxis = 1;
+    public static final double intakeTheshhold = .25;
   }
   public static class ClimberConstants {
   
     public static final int leftID = 11, rightID = 12;
-    public static final double gearing = 12 /* gearbox */ / .75 /* in. diam */ / Math.PI;
+    public static final double gearbox = 12, gearing = gearbox / .75 /* in. diam */ / Math.PI;
     /** The maxHeight is physically 19.5 in. but the gearing is too large 
      * at the bottom: the diameter increases as the rope winds up.
      */
     public static final double maxHeight = 13.5 /* inch */;
-    public static final double currentHigh = 50;
+    public static final double currentHigh = .95 * FalconMotorConstants.stallCurrent /* Amp */ / 12 /* Volt */;
+    public static final double pulleyDiam = 1.25, robotWeight = 100, gravity = 9.80665 /* m/s^2*/,
+          supportTorque = Units.inchesToMeters(pulleyDiam) / 2 * Units.lbsToKilograms(robotWeight) / 2 * gravity / gearbox,
+          supportVoltage = supportTorque / FalconMotorConstants.stallTorque * 12 /* V */;
+    public static final double kP = 2;
   }
   public static class DriveConstants {
     /* IDs are assigned clockwise from front left. */

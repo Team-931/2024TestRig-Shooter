@@ -62,13 +62,13 @@ public class RobotContainer {
     // cancelling on release.
     //m_driverController.b().whileTrue(shooter.exampleMethodCommand());
     /* leftBumper and rightBumper buttons: forward and reverse shooter hold */
-      opStick.axisGreaterThan(1, .25).and(new Trigger (shooter::sensorOff)) .onTrue(shooter.holdCommand(ShooterConstants.holdFwd)
+      opStick.axisGreaterThan(OperatorConstants.intakeAxis, OperatorConstants.intakeTheshhold).and(new Trigger (shooter::sensorOff)) .onTrue(shooter.holdCommand(ShooterConstants.holdFwd)
           .andThen(intake.runIf(.3, () -> {
             var a = arm.atBottom();
             SmartDashboard.putBoolean("Arm test", a);
             return a;})))
         .or(
-      opStick.axisLessThan(1, -.25) .onTrue(shooter.holdCommand(ShooterConstants.holdRvs)
+      opStick.axisLessThan(OperatorConstants.intakeAxis, -OperatorConstants.intakeTheshhold) .onTrue(shooter.holdCommand(ShooterConstants.holdRvs)
           .andThen(intake.runIf(-.3, () -> {
             var a = arm.atBottom();
             SmartDashboard.putBoolean("Arm test", a);
@@ -78,7 +78,8 @@ public class RobotContainer {
                                             .andThen(intake.runcommand(0)));
     
     /* y button: shooter shoot */
-      opStick.button(6) .onTrue(shooter.shootCommand(1)
+      opStick.button(6) .or (opStick.button(1))
+                  .onTrue(shooter.shootCommand(1)
                       .andThen( new WaitUntilCommand(shooter::shootFastEnough), 
                                 shooter.holdCommand(ShooterConstants.holdFwd))) // possible bug !!! Line 79 may counteract it
                   .onFalse(shooter.shootCommand(0)
@@ -98,6 +99,8 @@ public class RobotContainer {
                   .onTrue(climber.runOnce(() -> climber.stayPut1(true)));
       new Trigger(() -> climber.currentHigh(false))
                   .onTrue(climber.runOnce(() -> climber.stayPut1(false)));
+
+      opStick.button(5) .onTrue(climber.windDownCommand());
   }
 
   /**
