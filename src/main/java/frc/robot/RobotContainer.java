@@ -84,9 +84,9 @@ public class RobotContainer {
                                 shooter.holdCommand(ShooterConstants.holdFwd))) // possible bug !!! Line 79 may counteract it
                   .onFalse(shooter.shootCommand(0)
                       .andThen(shooter.holdCommand(0)));
-      opStick.button(6)  .onTrue(shooter.shootCommand(1))
+      opStick.button(5)  .onTrue(shooter.shootCommand(1))
                                 .onFalse(shooter.shootCommand(0));
-      opStick.button(5)  .onTrue(shooter.holdCommand(ShooterConstants.holdFwd))
+      opStick.button(6)  .onTrue(shooter.holdCommand(ShooterConstants.holdFwd))
                                 .onFalse(shooter.holdCommand(0));
       /* a button: arm up */
       opStick.button(2) .onTrue(arm.upCmd(true));
