@@ -14,7 +14,8 @@ import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
+//import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -31,8 +32,8 @@ public class RobotContainer {
   private final Climber climber = new Climber();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController opStick =
-      new CommandXboxController(OperatorConstants.opStickPort);
+  private final CommandGenericHID opStick =
+      new CommandGenericHID(OperatorConstants.opStickPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -61,13 +62,13 @@ public class RobotContainer {
     // cancelling on release.
     //m_driverController.b().whileTrue(shooter.exampleMethodCommand());
     /* leftBumper and rightBumper buttons: forward and reverse shooter hold */
-      opStick.leftBumper().and(opStick.rightBumper().negate()).and(new Trigger (shooter::sensorOff)) .onTrue(shooter.holdCommand(ShooterConstants.holdFwd)
+      opStick.axisGreaterThan(1, .25).and(new Trigger (shooter::sensorOff)) .onTrue(shooter.holdCommand(ShooterConstants.holdFwd)
           .andThen(intake.runIf(.3, () -> {
             var a = arm.atBottom();
             SmartDashboard.putBoolean("Arm test", a);
             return a;})))
         .or(
-      opStick.rightBumper().and(opStick.leftBumper().negate()) .onTrue(shooter.holdCommand(ShooterConstants.holdRvs)
+      opStick.axisLessThan(1, -.25) .onTrue(shooter.holdCommand(ShooterConstants.holdRvs)
           .andThen(intake.runIf(-.3, () -> {
             var a = arm.atBottom();
             SmartDashboard.putBoolean("Arm test", a);
@@ -77,20 +78,20 @@ public class RobotContainer {
                                             .andThen(intake.runcommand(0)));
     
     /* y button: shooter shoot */
-      opStick.y() .onTrue(shooter.shootCommand(1)
+      opStick.button(6) .onTrue(shooter.shootCommand(1)
                       .andThen( new WaitUntilCommand(shooter::shootFastEnough), 
                                 shooter.holdCommand(ShooterConstants.holdFwd))) // possible bug !!! Line 79 may counteract it
                   .onFalse(shooter.shootCommand(0)
                       .andThen(shooter.holdCommand(0)));
                 
       /* a button: arm up */
-      opStick.a() .onTrue(arm.upCmd(true))
-                  .onFalse(arm.upCmd(false));
+      opStick.button(2) .onTrue(arm.upCmd(true));
+      opStick.button(7) .onTrue(arm.upCmd(false));
 
       /* x button: release climber */
-      opStick.x() .onTrue(climber.topOrBottomCommand(true));
+      opStick.button(3) .onTrue(climber.topOrBottomCommand(true));
       /* b button: retract climber and stop */
-      opStick.b() .onTrue(climber.topOrBottomCommand(false)) 
+      opStick.button(4) .onTrue(climber.topOrBottomCommand(false)) 
                   .onFalse(climber.stayPutCommand());
 
       new Trigger(() -> climber.currentHigh(true))
