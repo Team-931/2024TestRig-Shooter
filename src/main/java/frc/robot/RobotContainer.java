@@ -11,8 +11,12 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
+import java.util.function.IntSupplier;
+
+import edu.wpi.first.wpilibj.event.EventLoop;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 //import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -54,29 +58,38 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    //new Trigger(shooter::exampleCondition)
-    //    .onTrue(new HoldCommand(shooter, 1));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    //m_driverController.b().whileTrue(shooter.exampleMethodCommand());
+      final EventLoop eventLoop = CommandScheduler.getInstance().getDefaultButtonLoop();
+      final class MultiBind {
+        MultiBind(IntSupplier input, Command[] output){
+          eventLoop.bind(new Runnable() {
+            int prevInput;
+            final int len = output.length;
+            public void run() {
+              int newInput = input.getAsInt();
+              if (newInput != prevInput) {
+                prevInput = newInput;
+                if (0 <= newInput && newInput < len)
+                output[newInput].schedule();
+              }
+            }
+          });
+        }
+      }
     /* leftBumper and rightBumper buttons: forward and reverse shooter hold */
-      opStick.axisGreaterThan(OperatorConstants.intakeAxis, OperatorConstants.intakeTheshhold).and(new Trigger (shooter::sensorOff)) .onTrue(shooter.holdCommand(ShooterConstants.holdFwd)
-          .andThen(intake.runIf(.3, () -> {
-            var a = arm.atBottom();
-            //SmartDashboard.putBoolean("Arm test", a);
-            return a;})))
-        .or(
-      opStick.axisLessThan(OperatorConstants.intakeAxis, -OperatorConstants.intakeTheshhold) .onTrue(shooter.holdCommand(ShooterConstants.holdRvs)
-          .andThen(intake.runIf(-.3, () -> {
-            var a = arm.atBottom();
-            //SmartDashboard.putBoolean("Arm test", a);
-            return a;})))
-        )
-                                            .onFalse(shooter.holdCommand(0) // possible bug !!! Line 85 may counteract it
-                                            .andThen(intake.runcommand(0)));
-    
+    new MultiBind (
+      () -> {
+        var val = opStick.getRawAxis(OperatorConstants.intakeAxis);
+        if (val > OperatorConstants.intakeTheshhold) return 1;
+        if (val < -OperatorConstants.intakeTheshhold) return 2;
+        return 0;
+      }, 
+      new Command[] {
+        shooter.holdCommand(0) .andThen(intake.runcommand(0)),
+        shooter.holdCommand(ShooterConstants.holdFwd)
+          .andThen(intake.runIf(.3, arm::atBottom)),
+        shooter.holdCommand(ShooterConstants.holdRvs)
+          .andThen(intake.runIf(-.3, arm::atBottom))
+        });
     /* y button: shooter shoot */
       opStick.button(1)
                   .onTrue(shooter.shootCommand(1)
