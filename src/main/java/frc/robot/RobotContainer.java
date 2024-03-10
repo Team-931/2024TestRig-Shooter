@@ -59,8 +59,16 @@ public class RobotContainer {
    */
   private void configureBindings() {
       final EventLoop eventLoop = CommandScheduler.getInstance().getDefaultButtonLoop();
+      /**
+       * Creates a binding that periodically receives a state request (in the form of an integer) from input,
+       * and if it is a change of state, records it and optionally dispatches a {@code Command}.
+       * (Recommendation: return a negative to prevent a {@code Command})
+       * @param input a function-like object which returns an {@code int} based on any info it wants
+       * @param output a set of {@link Command}s to dispatch based on the state (state 0 first),
+       * If the state {@code int} is {@code < 0} or {@code >= output.length}, no {@code Command} is dispatched.
+       */
       final class MultiBind {
-        MultiBind(IntSupplier input, Command[] output){
+        MultiBind(IntSupplier input, Command... output){
           eventLoop.bind(new Runnable() {
             int prevInput;
             final int len = output.length;
@@ -83,13 +91,12 @@ public class RobotContainer {
         if (val < -OperatorConstants.intakeTheshhold) return 2;
         return 0;
       }, 
-      new Command[] {
-        shooter.holdCommand(0) .andThen(intake.runcommand(0)),
-        shooter.holdCommand(ShooterConstants.holdFwd)
+      shooter.holdCommand(0) .andThen(intake.runcommand(0)),
+      shooter.holdCommand(ShooterConstants.holdFwd)
           .andThen(intake.runIf(.3, arm::atBottom)),
-        shooter.holdCommand(ShooterConstants.holdRvs)
+      shooter.holdCommand(ShooterConstants.holdRvs)
           .andThen(intake.runIf(-.3, arm::atBottom))
-        });
+      );
     /* y button: shooter shoot */
       opStick.button(1)
                   .onTrue(shooter.shootCommand(1)
