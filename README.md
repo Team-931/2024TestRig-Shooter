@@ -1,1 +1,1 @@
-This code will run only the shooter subsystem of our 2024 FRC robot.
+This code will run only the superstructure subsystems of our 2024 FRC robot.
